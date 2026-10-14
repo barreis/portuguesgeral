@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -23,8 +22,9 @@ p{line-height:1.65}
 .eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:.76rem;color:var(--cyan);font-weight:800}
 .card{background:linear-gradient(145deg,#19233d,#121a2e);border:1px solid #ffffff19;border-radius:20px;padding:22px;margin:16px 0;box-shadow:0 12px 35px #0002}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
-.btn{background:var(--purple);border:0;border-radius:11px;padding:12px 17px;font-weight:800;color:#101020;margin:5px 4px 5px 0}
+.btn{background:var(--purple);border:0;border-radius:11px;padding:12px 17px;font-weight:800;color:#101020;margin:5px 4px 5px 0;transition:all 0.2s}
 .btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 .btn.secondary{background:var(--panel2);border:1px solid #ffffff25;color:var(--text)}
 .btn.cyan{background:var(--cyan)}
 .btn.gold{background:var(--gold)}
@@ -32,7 +32,7 @@ p{line-height:1.65}
 input,textarea,select{width:100%;padding:12px;border:1px solid #ffffff30;background:#0b1224;color:white;border-radius:10px;margin:7px 0 13px}
 textarea{min-height:130px;resize:vertical}
 label{font-weight:700;font-size:.92rem}
-.option{display:block;width:100%;text-align:left;padding:14px;margin:9px 0;border-radius:12px;border:1px solid #ffffff25;background:#1c2944;color:white}
+.option{display:block;width:100%;text-align:left;padding:14px;margin:9px 0;border-radius:12px;border:1px solid #ffffff25;background:#1c2944;color:white;transition:all 0.2s}
 .option:hover{border-color:var(--cyan)}
 .option.selected{border:2px solid var(--cyan);background:#26365a}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -47,7 +47,7 @@ label{font-weight:700;font-size:.92rem}
 .door.done{border-color:var(--green);background:#12302b}
 .door.current{border-color:var(--gold);box-shadow:0 0 15px #ffd16625}
 .door.locked{opacity:.5}
-#feedback{white-space:pre-wrap;line-height:1.65}
+#feedback{white-space:pre-wrap;line-height:1.65;margin-top:15px;font-weight:600}
 table{width:100%;border-collapse:collapse}
 th,td{padding:11px;text-align:left;border-bottom:1px solid #ffffff20}
 th{color:var(--cyan)}
@@ -82,7 +82,7 @@ footer{text-align:center;color:var(--muted);padding:25px}
       </div>
     </div>
     <p class="small muted">Os QR Codes usam o endereço desta página quando ela está publicada na internet.</p>
-    <label for="teamName">Nome da equipe</label>
+    <label for="teamName">Nome personalizado da equipe (opcional)</label>
     <input id="teamName" maxlength="35" placeholder="Ex.: Guardiões da Palavra">
     <label for="teamSelect">Entrar como</label>
     <select id="teamSelect"><option value="1">Equipe 1</option><option value="2">Equipe 2</option></select>
@@ -147,7 +147,6 @@ footer{text-align:center;color:var(--muted);padding:25px}
     <button class="btn" onclick="setDuration()">Salvar duração</button>
     <hr style="border-color:#ffffff20">
     <button class="btn danger" onclick="resetAll()">Zerar todos os resultados deste navegador</button>
-    <p class="small muted">A senha abaixo é apenas um bloqueio visual. Não é uma proteção segura para informações confidenciais.</p>
   </div>
 </section>
 </main>
@@ -158,12 +157,12 @@ const TOTAL=30;
 const KEY="praxis_escape_v1";
 const initialDuration=120;
 let duration=initialDuration;
-let team=1,room=0,selected=null,answerLocked=false,shownHints={},timerHandle=null;
+let team=1,room=0,selected=null,answerLocked=false,timerHandle=null;
 
 const Q=[
 {cat:"Texto da vida pública",title:"A carta que não pede licença",type:"text",text:"Leia o trecho fictício de uma carta aberta publicada por moradores: “Uma praça não é um luxo ornamental. É espaço de convivência, circulação e pertencimento. Quando a prefeitura anuncia a reforma sem ouvir quem utiliza o local, transforma uma decisão coletiva em imposição administrativa. Não reivindicamos que toda proposta seja recusada; exigimos que a participação não seja reduzida a uma audiência meramente protocolar.”",ask:"Identifique a tese central e explique como a oposição entre “decisão coletiva” e “imposição administrativa” fortalece a argumentação. Escreva de 3 a 5 frases.",hint:"Observe a crítica à forma de decidir, não apenas à existência da reforma.",keys:["participacao","participação","imposicao","imposição","tese","ouvir","coletiva"]},
 {cat:"Morfossintaxe",title:"O verbo que exige testemunha",type:"mc",text:"“Os representantes entregaram o relatório à comissão durante a audiência.”",ask:"Qual análise sintática está correta?",options:["“O relatório” é objeto indireto; “à comissão” é objeto direto.","“O relatório” é objeto direto; “à comissão” é objeto indireto; “durante a audiência” é adjunto adverbial.","“Os representantes” é objeto direto; “o relatório” é sujeito.","“Durante a audiência” é complemento nominal."],correct:1,hint:"Pergunte o que foi entregue e a quem foi entregue."},
-{cat:"Literatura afro-brasileira",title:"A memória que resiste",type:"text",text:"Trecho autoral para fins didáticos: “Minha avó guardava nomes como quem protege sementes. Na sala, os retratos pareciam silenciosos; na cozinha, as histórias atravessavam gerações. Quando tentaram apagar o passado, ela pronunciou cada nome em voz alta.”",ask:"Explique como a memória familiar se torna uma forma de resistência e identifique um recurso expressivo presente no trecho.",hint:"Pense na transmissão entre gerações e compare memória a sementes.",keys:["memoria","memória","resistencia","resistência","metafora","metáfora","geracoes","gerações","identidade"]},
+{cat:"Literatura afro-brasileira",title:"A memória que resiste",type:"text",text:"Trecho autoral para fins didáticos: “Minha avó guardava nomes como quem protege sementes. Na sala, os retratos pareciam silenciosos; na cozinha, as histórias atravessavam gerações. Quando tentaram apagar o passado, ela pronounced cada nome em voz alta.”",ask:"Explique como a memória familiar se torna uma forma de resistência e identifique um recurso expressivo presente no trecho.",hint:"Pense na transmissão entre gerações e compare memória a sementes.",keys:["memoria","memória","resistencia","resistência","metafora","metáfora","geracoes","gerações","identidade"]},
 {cat:"Verdadeiro ou falso",title:"A armadilha do sujeito",type:"vf",text:"Considere: “Foram divulgados pela comissão os resultados da consulta pública.”",ask:"A afirmação é verdadeira ou falsa? “Os resultados da consulta pública” é o sujeito paciente da oração.",correct:"V",hint:"Passe a oração para a ordem direta: os resultados foram divulgados.",explain:"A oração está na voz passiva analítica. “Os resultados da consulta pública” é o sujeito paciente."},
 {cat:"Coesão",title:"A palavra que muda a rota",type:"mc",text:"“O projeto ampliou o acesso à biblioteca; entretanto, os horários continuaram incompatíveis com a rotina de muitos trabalhadores.”",ask:"Qual é o valor semântico de “entretanto” nesse contexto?",options:["Conclusão","Explicação","Oposição ou contraste","Finalidade"],correct:2,hint:"A segunda oração limita a avaliação positiva da primeira."},
 {cat:"Morfossintaxe",title:"O complemento disfarçado",type:"mc",text:"“A comunidade tinha necessidade de informações transparentes.”",ask:"A expressão “de informações transparentes” exerce qual função?",options:["Objeto indireto","Complemento nominal","Adjunto adnominal","Predicativo do sujeito"],correct:1,hint:"“Necessidade” é um substantivo abstrato que pede complemento."},
@@ -185,7 +184,7 @@ const Q=[
 {cat:"Verdadeiro ou falso",title:"O valor da vírgula",type:"vf",text:"Compare: “Os estudantes que revisaram o texto identificaram a ambiguidade.”",ask:"A oração “que revisaram o texto”, sem vírgulas, restringe o conjunto de estudantes mencionado. Verdadeiro ou falso?",correct:"V",hint:"Sem vírgulas, a oração adjetiva delimita quais estudantes estão sendo mencionados.",explain:"A oração adjetiva restritiva seleciona os estudantes que revisaram o texto."},
 {cat:"Argumentação",title:"A falácia da generalização",type:"mc",text:"“Dois estudantes não entregaram a atividade. Portanto, todos os estudantes desta turma são irresponsáveis.”",ask:"Que problema argumentativo aparece nessa conclusão?",options:["Argumento de autoridade","Generalização precipitada","Raciocínio por analogia bem fundamentado","Definição operacional"],correct:1,hint:"A conclusão universal extrapola a evidência de apenas dois casos."},
 {cat:"Morfossintaxe",title:"O predicativo escondido",type:"mc",text:"“A comissão considerou insuficiente a justificativa apresentada.”",ask:"Qual é a função sintática de “insuficiente”?",options:["Adjunto adnominal","Predicativo do objeto","Objeto indireto","Aposto"],correct:1,hint:"O termo atribui uma característica ao objeto “a justificativa apresentada” por meio do verbo considerar."},
-{cat:"Literatura afro-brasileira",title:"A leitura das entrelinhas",type:"text",text:"Trecho autoral: “Quando lhe perguntaram de onde vinha, respondeu com o nome de três rios, duas cidades e uma história que não cabia no mapa. O entrevistador repetiu a pergunta, como se a primeira resposta não tivesse existido.”",ask:"Explique como a repetição da pergunta produz um efeito de apagamento da voz da personagem. Comente também o sentido da imagem do mapa.",hint:"A personagem oferece uma identidade complexa, mas o interlocutor insiste em uma resposta simplificada.",keys:["apagamento","voz","identidade","complexa","reducao","redução","mapa","pluralidade","silenciamento","silenciamento"]},
+{cat:"Literatura afro-brasileira",title:"A leitura das entrelinhas",type:"text",text:"Trecho autoral: “Quando lhe perguntaram de onde vinha, respondeu com o nome de três rios, duas cidades e uma história que não cabia no mapa. O entrevistador repetiu a pergunta, como se a primeira resposta não tivesse existido.”",ask:"Explique como a repetição da pergunta produz um efeito de apagamento da voz da personagem. Comente também o sentido da imagem do mapa.",hint:"A personagem oferece uma identidade complexa, mas o interlocutor insiste em uma resposta simplificada.",keys:["apagamento","voz","identidade","complexa","reducao","redução","mapa","pluralidade","silenciamento"]},
 {cat:"Vida pública",title:"A fonte e a credibilidade",type:"mc",text:"Uma publicação viral afirma que uma nova lei já está em vigor, mas não cita número da lei, data de publicação nem órgão oficial. Uma segunda postagem reproduz a primeira sem acrescentar fontes.",ask:"Qual procedimento de verificação é mais consistente?",options:["Compartilhar a notícia porque duas páginas a divulgaram.","Considerar a repetição como prova de veracidade.","Buscar a norma em fonte oficial, verificar sua publicação, vigência e contexto.","Aceitar a postagem com mais curtidas."],correct:2,hint:"Repetição não equivale a confirmação independente."},
 {cat:"Sintaxe e sentido",title:"A pontuação estratégica",type:"text",text:"Compare: A) “Vamos ouvir os moradores que apresentaram propostas.” B) “Vamos ouvir os moradores, que apresentaram propostas.”",ask:"Explique a diferença de sentido criada pelas vírgulas. Considere o alcance da informação sobre os moradores.",hint:"Na primeira frase, a oração delimita um subconjunto; na segunda, acrescenta uma informação sobre os moradores mencionados.",keys:["restritiva","explicativa","subconjunto","todos","virgula","vírgula","delimita","acrescenta"]},
 {cat:"Desafio final",title:"O dossiê das contradições",type:"text",text:"Dossiê fictício: “A administração afirma que a consulta foi ampla. O relatório registra 18 participantes, sem indicar quantas pessoas foram convidadas. A ata informa que a reunião ocorreu às 14h, mas o convite público divulgado no mesmo canal indicava 19h. O comunicado final conclui que houve consenso, embora duas manifestações contrárias estejam anexadas ao documento.”",ask:"Produza uma análise de 6 a 10 frases: identifique pelo menos três problemas de coerência ou de fundamentação, explique a relevância de cada um e proponha duas medidas para tornar a decisão pública mais transparente. A resposta deve articular evidências do dossiê.",hint:"Investigue representatividade, divergência de horários e diferença entre consenso e existência de objeções. Sugira medidas verificáveis.",keys:["participantes","convidados","horario","horário","consenso","contrarias","contrárias","transparencia","transparência","publicidade","representatividade","convocacao","convocação"]},
@@ -205,6 +204,7 @@ let state=loadState();
 if(!state.teams||!state.teams[1]||!state.teams[2])state=freshState();
 if(!state.duration)state.duration=initialDuration;
 duration=state.duration;
+
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function norm(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim()}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -214,11 +214,13 @@ function elapsed(t){
  return (t.elapsed||0)+Math.floor((Date.now()-t.started)/1000);
 }
 function fmt(s){s=Math.max(0,s);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+
 function updateQR(){
  const base=location.href.split("#")[0];
  document.getElementById("qr1").src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data="+encodeURIComponent(base+"#equipe=1");
  document.getElementById("qr2").src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data="+encodeURIComponent(base+"#equipe=2");
 }
+
 function joinTeam(n){
  team=n;
  const t=current();
@@ -232,6 +234,7 @@ function joinTeam(n){
  room=Math.min(t.room,TOTAL-1);
  startClock();renderQuestion();
 }
+
 function leaveGame(){
  if(timerHandle)clearInterval(timerHandle);
  timerHandle=null;
@@ -239,11 +242,13 @@ function leaveGame(){
  document.getElementById("home").classList.remove("hidden");
  renderTeacher();
 }
+
 function backHome(){
  document.getElementById("teacher").classList.add("hidden");
  document.getElementById("game").classList.add("hidden");
  document.getElementById("home").classList.remove("hidden");
 }
+
 function startClock(){
  if(timerHandle)clearInterval(timerHandle);
  timerHandle=setInterval(()=>{
@@ -251,19 +256,32 @@ function startClock(){
    if(!t.started||t.finished)return;
    const remain=duration*60-elapsed(t);
    document.getElementById("timer").textContent=fmt(remain);
-   if(remain<=0){t.elapsed=duration*60;t.started=null;t.finished=Date.now();save();clearInterval(timerHandle);timerHandle=null;renderQuestion();alert("Tempo encerrado! A equipe concluiu "+t.done.length+" salas.");}
+   if(remain<=0){
+     t.elapsed=duration*60;t.started=null;t.finished=Date.now();save();
+     clearInterval(timerHandle);timerHandle=null;
+     renderQuestion();
+     alert("Tempo encerrado! A equipe concluiu "+t.done.length+" salas.");
+   }
  },1000);
 }
+
 function renderQuestion(){
  const t=current();
- if(t.finished&&t.done.length<TOTAL){document.getElementById("questionCard").innerHTML="<h2>Missão encerrada</h2><p>O tempo acabou ou a equipe finalizou a partida.</p><button class='btn' onclick='showRanking()'>Ver ranking</button>";return}
- if(t.done.length>=TOTAL){finishGame();return}
+ const card=document.getElementById("questionCard");
+ card.classList.remove("hidden");
+ document.getElementById("mapCard").classList.add("hidden");
+ document.getElementById("rankingCard").classList.add("hidden");
+
+ if(t.finished&&t.done.length<TOTAL){
+   card.innerHTML="<h2>Missão encerrada</h2><p>O tempo acabou ou a equipe finalizou a partida.</p><button class='btn' onclick='showRanking()'>Ver ranking</button>";
+   return;
+ }
+ if(t.done.length>=TOTAL){finishGame();return;}
+
  room=t.room;
  const q=Q[room];
  selected=null;answerLocked=false;
- document.getElementById("questionCard").classList.remove("hidden");
- document.getElementById("mapCard").classList.add("hidden");
- document.getElementById("rankingCard").classList.add("hidden");
+ 
  document.getElementById("gTeam").textContent=t.name;
  document.getElementById("points").textContent=t.points;
  document.getElementById("errors").textContent=t.errors;
@@ -276,6 +294,7 @@ function renderQuestion(){
  document.getElementById("roomTags").innerHTML="<span class='badge'>"+esc(q.cat)+"</span><span class='badge'>Desafio "+(room+1)+"</span>";
  document.getElementById("qText").innerHTML="<p>"+esc(q.text)+"</p><p><strong>"+esc(q.ask)+"</strong></p>";
  document.getElementById("feedback").textContent="";
+ 
  const a=document.getElementById("answerArea");
  a.innerHTML="";
  if(q.type==="mc"){
@@ -302,6 +321,7 @@ function renderQuestion(){
  document.getElementById("submitBtn").textContent="Verificar resposta";
  document.getElementById("hintBtn").disabled=false;
 }
+
 function checkAnswer(q){
  if(q.type==="mc")return selected===q.correct;
  if(q.type==="vf")return selected===q.correct;
@@ -316,13 +336,14 @@ function checkAnswer(q){
  const keyHits=q.keys.filter(k=>val.includes(norm(k))).length;
  return words.length>=minWords&&keyHits>=Math.min(2,q.keys.length);
 }
+
 function submitAnswer(){
  if(answerLocked)return;
  const q=Q[room],t=current();
  if(q.type==="mc"||q.type==="vf"){
-  if(selected===null){document.getElementById("feedback").textContent="Escolha uma alternativa antes de continuar.";return}
+  if(selected===null){document.getElementById("feedback").textContent="⚠️ Escolha uma alternativa antes de continuar.";return}
  }else if(!document.getElementById("writtenAnswer").value.trim()){
-  document.getElementById("feedback").textContent="Escreva sua resposta antes de continuar.";return
+  document.getElementById("feedback").textContent="⚠️ Escreva sua resposta antes de continuar.";return
  }
  const ok=checkAnswer(q);
  if(!ok){
@@ -343,17 +364,20 @@ function submitAnswer(){
  let detail=q.explain?"\n\n"+q.explain:"";
  document.getElementById("feedback").textContent="✅ Resposta aceita! +50 pontos.\nSala concluída. "+detail+"\n\nPreparando o próximo desafio...";
  updateStats();
- setTimeout(()=>{if(current().done.length>=TOTAL)finishGame();else renderQuestion()},1400);
+ setTimeout(()=>{if(current().done.length>=TOTAL)finishGame();else renderQuestion()},1800);
 }
+
 function getHint(q,used){
  const hints=[q.hint,"Releia cada oração e destaque as palavras que sustentam sua interpretação.","Converse com o grupo e compare duas interpretações possíveis antes de responder."];
  return "💡 DICA: "+hints[Math.min(used,hints.length-1)];
 }
+
 function revealHint(){
  const t=current(),q=Q[room],used=t.hints[room]||0;
  if(used===0){t.points=Math.max(0,t.points-50);t.hints[room]=1;save();document.getElementById("feedback").textContent="💡 DICA SOLICITADA: "+q.hint+"\nPenalidade: -50 pontos.";updateStats()}
  else document.getElementById("feedback").textContent=getHint(q,Math.min(used,2))+"\nAs dicas adicionais não retiram pontos.";
 }
+
 function updateStats(){
  const t=current();
  document.getElementById("points").textContent=t.points;
@@ -362,6 +386,7 @@ function updateStats(){
  document.getElementById("progressBar").style.width=(t.done.length/TOTAL*100)+"%";
  save();
 }
+
 function finishGame(){
  const t=current();
  if(!t.finished){t.elapsed=elapsed(t);t.started=null;t.finished=Date.now();save()}
@@ -369,6 +394,7 @@ function finishGame(){
  if(timerHandle)clearInterval(timerHandle);
  timerHandle=null;
 }
+
 function showMap(){
  document.getElementById("questionCard").classList.add("hidden");
  document.getElementById("rankingCard").classList.add("hidden");
@@ -379,6 +405,7 @@ function showMap(){
   return "<div class='door "+(done?"done":active?"current":locked?"locked":"")+"'><strong>"+(done?"✓":String(i+1).padStart(2,"0"))+"</strong><p class='small'>"+esc(q.title)+"</p><span class='small'>"+(done?"Concluída":active?"Em andamento":"Bloqueada")+"</span></div>";
  }).join("");
 }
+
 function showRanking(){
  document.getElementById("questionCard").classList.add("hidden");
  document.getElementById("mapCard").classList.add("hidden");
@@ -391,7 +418,9 @@ function showRanking(){
  });
  document.getElementById("ranking").innerHTML="<table><thead><tr><th>Pos.</th><th>Equipe</th><th>Salas</th><th>Pontos</th><th>Erros</th><th>Tempo</th></tr></thead><tbody>"+arr.map((t,i)=>"<tr><td>"+(i+1)+"º</td><td>"+esc(t.name)+"</td><td>"+t.done.length+"/30</td><td>"+t.points+"</td><td>"+t.errors+"</td><td>"+fmt(elapsed(t))+"</td></tr>").join("")+"</tbody></table><p class='small muted'>Critérios: maior número de salas concluídas, maior pontuação, menor número de erros e menor tempo.</p>";
 }
+
 function backToQuestion(){document.getElementById("mapCard").classList.add("hidden");document.getElementById("rankingCard").classList.add("hidden");document.getElementById("questionCard").classList.remove("hidden")}
+
 function showTeacher(){
  if(timerHandle){clearInterval(timerHandle);timerHandle=null}
  document.getElementById("home").classList.add("hidden");
@@ -399,16 +428,19 @@ function showTeacher(){
  document.getElementById("teacher").classList.remove("hidden");
  renderTeacher();
 }
+
 function renderTeacher(){
  const arr=Object.values(state.teams);
  document.getElementById("durationInput").value=state.duration;
- document.getElementById("teacherStats").innerHTML="<table><thead><tr><th>Equipe</th><th>Salas</th><th>Progresso</th><th>Pontos</th><th>Erros</th><th>Tempo decorrido</th><th>Status</th></tr></thead><tbody>"+arr.map(t=>"<tr><td>"+esc(t.name)+"</td><td>"+t.done.length+"/30</td><td>"+Math.round(t.done.length/TOTAL*100)+"%</td><td>"+t.points+"</td><td>"+t.errors+"</td><td>"+fmt(elapsed(t))+"</td><td>"+(t.finished?"Encerrada":t.started?"Em andamento":"Não iniciada")+"</td></tr>").join("")+"</tbody></table><p class='muted small'>Este painel mostra os dados armazenados neste navegador. Para usar vários celulares com atualização simultânea, conecte o jogo a um banco de dados online.</p>";
+ document.getElementById("teacherStats").innerHTML="<table><thead><tr><th>Equipe</th><th>Salas</th><th>Progresso</th><th>Pontos</th><th>Erros</th><th>Tempo decorrido</th><th>Status</th></tr></thead><tbody>"+arr.map(t=>"<tr><td>"+esc(t.name)+"</td><td>"+t.done.length+"/30</td><td>"+Math.round(t.done.length/TOTAL*100)+"%</td><td>"+t.points+"</td><td>"+t.errors+"</td><td>"+fmt(elapsed(t))+"</td><td>"+(t.finished?"Encerrada":t.started?"Em andamento":"Não iniciada")+"</td></tr>").join("")+"</tbody></table><p class='muted small'>Este painel mostra os dados armazenados neste navegador.</p>";
 }
+
 function setDuration(){
  const v=Number(document.getElementById("durationInput").value);
  if(!Number.isFinite(v)||v<15||v>240){alert("Escolha entre 15 e 240 minutos.");return}
  state.duration=v;duration=v;save();alert("Duração salva para novas partidas.");
 }
+
 function exportResults(){
  const rows=[["Equipe","Salas","Pontos","Erros","Tempo_segundos","Finalizada"],...Object.values(state.teams).map(t=>[t.name,t.done.length,t.points,t.errors,elapsed(t),t.finished?"Sim":"Não"])];
  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\r\n");
@@ -416,6 +448,7 @@ function exportResults(){
  const url=URL.createObjectURL(blob),a=document.createElement("a");
  a.href=url;a.download="praxis_resultados.csv";a.click();URL.revokeObjectURL(url);
 }
+
 function resetAll(){
  if(!confirm("Tem certeza? Todos os resultados locais serão apagados."))return;
  if(!confirm("Confirme novamente para zerar a competição."))return;
@@ -423,9 +456,12 @@ function resetAll(){
  if(timerHandle)clearInterval(timerHandle);
  timerHandle=null;backHome();renderTeacher();
 }
+
 updateQR();
 const hash=location.hash.match(/equipe=(1|2)/);
-if(hash){document.getElementById("teamSelect").value=hash[1];}
+if(hash){
+ document.getElementById("teamSelect").value=hash[1];
+}
 </script>
 </body>
 </html>
